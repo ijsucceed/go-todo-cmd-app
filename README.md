@@ -1,1 +1,2 @@
-# go-todo-cmd-app
+# Simple CLI Todo App In Go
+

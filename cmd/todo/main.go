@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -27,7 +28,7 @@ func main() {
 	todos := &todo.Todos{}
 
 	if err := todos.Load(todoFile); err != nil {
-		fmt.FPrintln(os.Stderr, err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 
@@ -35,42 +36,42 @@ func main() {
 	case *add:
 		task, err := getInput(os.Stdin, flag.Args()...)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err, Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 
 		todos.Add(task)
 		err = todos.Store(todoFile)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 	case *complete > 0:
 		err := todos.Complete(*complete)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 		err = todos.Store(todoFile)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 	case *del > 0:
 		err := todos.Delete(*del)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 		err = todos.Store(todoFile)
 		if err != nil {
-			fmt.FPrintln(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
 	case *list:
 		todos.Print()
 	default:
-		fmt.FPrintln(os.Stdout, "invalid command")
+		fmt.Fprintln(os.Stdout, "invalid command")
 		os.Exit(0)
 	}
 }
@@ -90,7 +91,7 @@ func getInput(r io.Reader, args ...string) (string, error) {
 	text := scanner.Text()
 
 	if len(text) == 0 {
-		return "", erros.New("empty todo is not allowed")
+		return "", errors.New("empty todo is not allowed")
 	}
 
 	return text, nil

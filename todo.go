@@ -33,23 +33,23 @@ func (t *Todos) Add(task string) {
 
 func (t *Todos) Complete(index int) error {
 	ls := *t
-	if index <= 0 || index >= len(s) {
-		return errors.New("Invalid index")
+	if index <= 0 || index > len(ls) {
+		return errors.New("invalid index")
 	}
 
 	ls[index - 1].CompletedAt = time.Now()
 	ls[index - 1].Done = true
 
-	return nill
+	return nil
 }
 
 func (t *Todos) Delete(index int) error {
 	ls := *t
-	if index <=0 || index >= len(ls) {
-		return errors.New("Invalid index")
+	if index <=0 || index > len(ls) {
+		return errors.New("invalid index")
 	}
 
-	*t = append(ls[:index-1], ls[index]...)
+	*t = append(ls[:index-1], ls[index:]...)
 
 	return nil
 }
@@ -105,7 +105,7 @@ func (t *Todos) Print() {
 		task := blue(item.Task)
 		done := blue("no")
 		if item.Done {
-			task = green(fmt.Sprint("\u2705 %s", item.Task))
+			task = green(fmt.Sprintf("\u2705 %s", item.Task))
 			done = green("yes")
 		}
 		cells = append(cells, *&[]*simpletable.Cell{
@@ -113,14 +113,14 @@ func (t *Todos) Print() {
 			{Text: task},
 			{Text: done},
 			{Text: item.CreatedAt.Format(time.RFC822)},
-			{Text: item.CompletedAt.Format(time.RFC822)}
+			{Text: item.CompletedAt.Format(time.RFC822)},
 		})
 	}
 
-	table.Body = &simpletable.Body(Cells: cells)
+	table.Body = &simpletable.Body{Cells: cells}
 
 	table.Footer = &simpletable.Footer{Cells: []*simpletable.Cell{
-		{Align: simpletable.AlignCenter, Span: 5, Text: red(fmt.Sprintf("You have %s pending Todos", t.CountPending()))},
+		{Align: simpletable.AlignCenter, Span: 5, Text: red(fmt.Sprintf("You have %d pending Todos", t.CountPending()))},
 	}}
 
 	table.SetStyle(simpletable.StyleUnicode)
